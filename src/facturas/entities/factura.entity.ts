@@ -1,4 +1,5 @@
-import { Column, Entity } from "typeorm";
+import { Cliente } from "src/clientes/entities/cliente.entity";
+import { Column, Entity, ManyToOne } from "typeorm";
 
 @Entity()
 export class Factura {
@@ -6,7 +7,7 @@ export class Factura {
     @Column({ primary: true, generated: true})
     id:number;
 
-    @Column({unique: true})
+    @Column()
     name: string;
 
     @Column()
@@ -15,7 +16,9 @@ export class Factura {
     @Column()
     type: string;
     
-    @Column()
-    client: string;
 
+    @ManyToOne(() => Cliente, (cliente) => cliente.id,{
+        eager: true
+    })
+    client: Cliente;
 }

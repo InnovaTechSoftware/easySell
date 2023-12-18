@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive } from "class-validator";
+import { IsString, IsNumber, IsPositive, IsInt, IsOptional, isInt } from "class-validator";
 
 
 export class CreateFacturaDto {
@@ -13,7 +13,8 @@ export class CreateFacturaDto {
    @IsString()
    type: string;
 
-   @IsString()
-   client: string
+   @IsNumber()
+   @IsOptional()
+   client?: number;
 
 }

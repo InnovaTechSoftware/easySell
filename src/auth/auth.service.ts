@@ -4,11 +4,15 @@ import { RegisterDto } from './dto/register.dto';
 
 import * as bcryptjs from 'bcryptjs'
 import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
 
-    constructor(private readonly usersService: UsersService) { }
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService
+        ) { }
 
     async login({ user, password }: LoginDto) {
         const userfound = await this.usersService.findOneByUser(user)
@@ -21,7 +25,13 @@ export class AuthService {
             return new HttpException('Wrong password', HttpStatus.UNAUTHORIZED)
         }
 
-        return userfound;
+        const payload = {user: userfound.user}
+
+        const token = await this.jwtService.signAsync(payload) 
+        return {
+            token,
+            user
+        };
 
     }
     async register({ name, lastname, documentType, document, user, password }: RegisterDto) {

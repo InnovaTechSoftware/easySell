@@ -7,24 +7,38 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
-  ){}
+    private readonly userRepository: Repository<User>,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
-    
-    const user = await this.userRepository.create(createUserDto)
-    return this.userRepository.save(user) 
+    const user = await this.userRepository.create(createUserDto);
+    return this.userRepository.save(user);
   }
 
-  findOneByUser(user: string){
-    return this.userRepository.findOneBy({user})  
+  findOneByUser(user: string) {
+    return this.userRepository.findOneBy({ user });
+  }
+
+  findByUserWithPassword(user: string) {
+    return this.userRepository.findOne({
+      where: { user },
+      select: [
+        'id',
+        'name',
+        'lastname',
+        'documentType',
+        'document',
+        'user',
+        'password',
+        'role',
+      ],
+    });
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.find();
   }
 
   findOne(id: number) {

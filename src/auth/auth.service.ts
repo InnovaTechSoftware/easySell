@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async login({ user, password }: LoginDto) {
-    const userfound = await this.usersService.findOneByUser(user);
+    const userfound = await this.usersService.findByUserWithPassword(user);
     if (!userfound) {
       return new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

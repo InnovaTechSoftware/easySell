@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -26,6 +26,16 @@ export class AuthController {
     registerDto: RegisterDto,
   ) {
     return this.authService.register(registerDto);
+  }
+
+  @Post('refresh')
+  refresh(
+    @Body('refreshToken') refreshToken: string,
+  ) {
+    if (!refreshToken) {
+      throw new HttpException('Refresh token is required', HttpStatus.BAD_REQUEST);
+    }
+    return this.authService.refreshTokens(refreshToken);
   }
 
   @Get('profile')

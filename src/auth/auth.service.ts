@@ -25,12 +25,7 @@ export class AuthService {
     }
 
     const payload = { user: userfound.user, role: userfound.role };
-
-    const token = await this.jwtService.signAsync(payload);
-    return {
-      token,
-      user,
-    };
+    return this.generateTokens(payload);
   }
   async register({
     name,
@@ -63,5 +58,26 @@ export class AuthService {
 
   async profile({ user, role }: { user: string; role: string }) {
     return await this.usersService.findOneByUser(user);
+  }
+
+  async refreshTokens (refreshToken: string){
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken);
+      return this.generateTokens({ user: payload.user, role: payload.role}); 
+    } catch (e) {
+      throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  private async generateTokens (payload: any){
+    const accessToken = await this.jwtService.signAsync(payload,{
+      expiresIn: '15m',
+    });
+
+    const refreshToken = await this.jwtService.signAsync(payload,{
+      expiresIn: '7d',
+    });
+
+    return {accessToken, refreshToken};
   }
 }

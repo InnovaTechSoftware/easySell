@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config()
+
 export const jwtConstants = {
-    secret: 'llevar esta palabra a .env'
+    secret: process.env.SECRET
 };

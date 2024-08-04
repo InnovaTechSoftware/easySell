@@ -18,7 +18,7 @@ export class Cliente {
   @Column({ unique: true })
   document: number;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp' })
   createdAt: Date;
 
   @OneToMany(() => Factura, (factura) => factura.client)

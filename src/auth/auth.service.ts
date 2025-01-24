@@ -4,13 +4,13 @@ import { RegisterDto } from './dto/register.dto';
 
 import * as bcryptjs from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
-import { JwtService } from '@nestjs/jwt';
+import { TokenService } from '../auth/token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async login({ user, password }: LoginDto) {
@@ -25,7 +25,9 @@ export class AuthService {
     }
 
     const payload = { user: userfound.user, role: userfound.role };
-    return this.generateTokens(payload);
+    const accessToken = await this.tokenService.generateAccessToken(payload);
+    const refreshToken = await this.tokenService.generateRefreshToken(payload);
+    return { accessToken, refreshToken };
   }
   async register({
     name,
@@ -62,22 +64,11 @@ export class AuthService {
 
   async refreshTokens (refreshToken: string){
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken);
-      return this.generateTokens({ user: payload.user, role: payload.role}); 
+      const payload = await this.tokenService.verifyRefreshToken(refreshToken);
+      return this.tokenService.generateAccessToken({ user: payload.user, role: payload.role}); 
     } catch (e) {
       throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
     }
   }
 
-  private async generateTokens (payload: any){
-    const accessToken = await this.jwtService.signAsync(payload,{
-      expiresIn: '15m',
-    });
-
-    const refreshToken = await this.jwtService.signAsync(payload,{
-      expiresIn: '7d',
-    });
-
-    return {accessToken, refreshToken};
-  }
 }

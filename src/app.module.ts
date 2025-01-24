@@ -5,6 +5,7 @@ import { ClientesModule } from './clientes/clientes.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   
@@ -37,7 +38,8 @@ import { ConfigModule } from '@nestjs/config';
     ClientesModule,
     FacturasModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    LoggerModule
   ],
   controllers: [],
   providers: [],

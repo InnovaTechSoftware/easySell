@@ -1,13 +1,14 @@
-version: "3.8"
+version: '3.8'
 services:
   postgresDB:
     image: postgres:14.1-alpine
+    container_name: postgresDB
     restart: always
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=3a515377
-      - POSTGRES_DB=db_easysell
+      - POSTGRES_DB=db_smartcol_api
     volumes:
       - ./postgres:/var/lib/postgresql/data
     ports:
-      - "5436:5432"
+      - '5436:5432'

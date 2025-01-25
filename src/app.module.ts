@@ -5,7 +5,7 @@ import { ClientesModule } from './clientes/clientes.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { LoggerModule } from './logger/logger.module';
+import { LoggingModule } from './logger/logger.module';
 
 @Module({
   
@@ -13,7 +13,8 @@ import { LoggerModule } from './logger/logger.module';
   imports: [
 
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      envFilePath: '.env',
     }),
 
     TypeOrmModule.forRoot({
@@ -39,7 +40,7 @@ import { LoggerModule } from './logger/logger.module';
     FacturasModule,
     UsersModule,
     AuthModule,
-    LoggerModule
+    LoggingModule
   ],
   controllers: [],
   providers: [],

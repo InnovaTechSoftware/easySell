@@ -1,62 +1,114 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Inject } from '@nestjs/common';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cliente } from './entities/cliente.entity';
 import { Repository } from 'typeorm';
+import { LoggerStrategySelector } from '../logger/strategies/logger-strategy.selector'; // Adjust path as needed
+import { Logger } from 'winston';
 
 @Injectable()
 export class ClientesService {
+  private logger: Logger;
 
-constructor(
-  @InjectRepository(Cliente)
-  private readonly clienteRepository: Repository<Cliente>
-){}
+  constructor(
+    @InjectRepository(Cliente)
+    private readonly clienteRepository: Repository<Cliente>,
+    private loggerStrategySelector: LoggerStrategySelector
+  ) {
+    // Select logger strategy based on environment
+    const strategy = this.loggerStrategySelector.selectStrategy();
+    this.logger = strategy.createLogger();
+  }
 
   async create(createClienteDto: CreateClienteDto) {
-    const userFound = await this.clienteRepository.findOne({
-      where: {
-        document: createClienteDto.document
+    try {
+      this.logger.info(`Attempting to create client with document: ${createClienteDto.document}`);
+
+      const userFound = await this.clienteRepository.findOne({
+        where: {
+          document: createClienteDto.document
+        }
+      });
+
+      if (userFound) {
+        this.logger.warn(`Client with document ${createClienteDto.document} already exists`);
+        throw new HttpException("Cliente already exists", HttpStatus.CONFLICT);
       }
-    }) 
 
-    if(userFound) {
-      return new HttpException("Cliente already exists", HttpStatus.CONFLICT)
+      const newClient = this.clienteRepository.create(createClienteDto);
+      const savedClient = await this.clienteRepository.save(newClient);
+
+      this.logger.info(`Client created successfully with ID: ${savedClient.id}`);
+      return savedClient;
+    } catch (error) {
+      this.logger.error(`Error creating client: ${error.message}`, error.stack);
+      throw error;
     }
-
-    const newClient = await this.clienteRepository.create(createClienteDto)
-    return this.clienteRepository.save(newClient)
-
   }
 
   async findAll() {
-    return await this.clienteRepository.find()
+    try {
+      this.logger.info('Fetching all clients');
+      const clients = await this.clienteRepository.find();
+      this.logger.info(`Retrieved ${clients.length} clients`);
+      return clients;
+    } catch (error) {
+      this.logger.error(`Error fetching clients: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async findOne(id: number) {
-    const userFound = await this.clienteRepository.findOne({
-      where: {id}
-    });
+    try {
+      this.logger.info(`Searching for client with ID: ${id}`);
+      const userFound = await this.clienteRepository.findOne({
+        where: { id }
+      });
 
-    if(!userFound){
-      return new HttpException('User not found', HttpStatus.NOT_FOUND)
+      if (!userFound) {
+        this.logger.warn(`Client with ID ${id} not found`);
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      this.logger.info(`Client found with ID: ${id}`);
+      return userFound;
+    } catch (error) {
+      this.logger.error(`Error finding client: ${error.message}`, error.stack);
+      throw error;
     }
-    return userFound;
   }
 
   async update(id: number, updateClienteDto: UpdateClienteDto) {
-    const userFound = await this.clienteRepository.findOne({
-      where: {id}
-    });
-    if(!userFound){
-      return new HttpException('User not found', HttpStatus.NOT_FOUND)
-    }
-    const userUpdate = await this.clienteRepository.update(id, updateClienteDto)
+    try {
+      this.logger.info(`Attempting to update client with ID: ${id}`);
+      const userFound = await this.clienteRepository.findOne({
+        where: { id }
+      });
 
-    return userUpdate;
+      if (!userFound) {
+        this.logger.warn(`Client with ID ${id} not found for update`);
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      const userUpdate = await this.clienteRepository.update(id, updateClienteDto);
+      this.logger.info(`Client with ID ${id} updated successfully`);
+      return userUpdate;
+    } catch (error) {
+      this.logger.error(`Error updating client: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} cliente`;
+    try {
+      this.logger.info(`Attempting to remove client with ID: ${id}`);
+      // Implement actual removal logic
+      this.logger.info(`Client with ID ${id} removed`);
+      return `This action removes a #${id} cliente`;
+    } catch (error) {
+      this.logger.error(`Error removing client: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 }

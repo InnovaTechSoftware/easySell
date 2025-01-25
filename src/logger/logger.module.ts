@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ConsoleLoggerStrategy } from './strategies/console-logger.strategy';
 import { FileLoggerStrategy } from './strategies/file-logger.strategy';
 import { DailyRotateLoggerStrategy } from './strategies/daily-rotate-logger.strategy';
@@ -15,7 +16,8 @@ import { LoggerStrategySelector } from './strategies/logger-strategy.selector';
     ConsoleLoggerFactory,
     FileLoggerFactory,
     DailyRotateLoggerFactory,
-    LoggerStrategySelector  // Cambia esto
+    ConfigService, // Agregado
+    LoggerStrategySelector,
   ],
   exports: [
     ConsoleLoggerStrategy,
@@ -24,7 +26,7 @@ import { LoggerStrategySelector } from './strategies/logger-strategy.selector';
     ConsoleLoggerFactory,
     FileLoggerFactory,
     DailyRotateLoggerFactory,
-    LoggerStrategySelector  // Y esto
-  ]
+    LoggerStrategySelector,
+  ],
 })
 export class LoggingModule {}

@@ -17,10 +17,13 @@ export class DailyRotateLoggerStrategy implements LoggerStrategy {
           maxFiles: '14d',
           format: format.combine(
             format.timestamp(),
-            format.json()
-          )
-        })
-      ]
+            format.printf(
+              ({ timestamp, level, message }) =>
+                `${timestamp} [${level}]: ${message}`,
+            ),
+          ),
+        }),
+      ],
     });
   }
 }

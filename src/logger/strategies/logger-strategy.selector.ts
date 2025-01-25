@@ -11,11 +11,12 @@ export class LoggerStrategySelector {
     private configService: ConfigService,
     private consoleStrategy: ConsoleLoggerStrategy,
     private fileStrategy: FileLoggerStrategy,
-    private dailyRotateStrategy: DailyRotateLoggerStrategy
+    private dailyRotateStrategy: DailyRotateLoggerStrategy,
   ) {}
 
   selectStrategy(): LoggerStrategy {
     const env = this.configService.get<string>('NODE_ENV', 'development');
+    // console.log(env);
 
     switch (env) {
       case 'development':

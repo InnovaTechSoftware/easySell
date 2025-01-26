@@ -6,12 +6,10 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggingModule } from './logger/logger.module';
+import { RedisModule } from './cache-handler/cache-handler.module';
 
 @Module({
-  
-  
   imports: [
-
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -26,10 +24,10 @@ import { LoggingModule } from './logger/logger.module';
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
-      ssl: process.env.POSTGRES_SSL === "true",
+      ssl: process.env.POSTGRES_SSL === 'true',
       extra: {
         ssl:
-          process.env.POSTGRES_SSL === "true"
+          process.env.POSTGRES_SSL === 'true'
             ? {
                 rejectUnauthorized: false,
               }
@@ -40,7 +38,8 @@ import { LoggingModule } from './logger/logger.module';
     FacturasModule,
     UsersModule,
     AuthModule,
-    LoggingModule
+    LoggingModule,
+    RedisModule,
   ],
   controllers: [],
   providers: [],

@@ -7,6 +7,7 @@ import { ConsoleLoggerFactory } from './factories/console-logger.factory';
 import { FileLoggerFactory } from './factories/file-logger.factory';
 import { DailyRotateLoggerFactory } from './factories/daily-rotate-logger.factory';
 import { LoggerStrategySelector } from './strategies/logger-strategy.selector';
+import { LoggerService } from './logger.service';
 
 @Module({
   providers: [
@@ -18,6 +19,7 @@ import { LoggerStrategySelector } from './strategies/logger-strategy.selector';
     DailyRotateLoggerFactory,
     ConfigService, // Agregado
     LoggerStrategySelector,
+    LoggerService,
   ],
   exports: [
     ConsoleLoggerStrategy,
@@ -27,6 +29,7 @@ import { LoggerStrategySelector } from './strategies/logger-strategy.selector';
     FileLoggerFactory,
     DailyRotateLoggerFactory,
     LoggerStrategySelector,
+    LoggerService,
   ],
 })
 export class LoggingModule {}

@@ -6,40 +6,45 @@ import { Cliente } from './entities/cliente.entity';
 import { Repository } from 'typeorm';
 import { LoggerStrategySelector } from '../logger/strategies/logger-strategy.selector'; // Adjust path as needed
 import { Logger } from 'winston';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class ClientesService {
-  private logger: Logger;
+  private logger;
 
   constructor(
     @InjectRepository(Cliente)
     private readonly clienteRepository: Repository<Cliente>,
-    private loggerStrategySelector: LoggerStrategySelector
+    private loggerService: LoggerService,
   ) {
-    // Select logger strategy based on environment
-    const strategy = this.loggerStrategySelector.selectStrategy();
-    this.logger = strategy.createLogger();
+    this.logger = this.loggerService.getLogger();
   }
 
   async create(createClienteDto: CreateClienteDto) {
     try {
-      this.logger.info(`Attempting to create client with document: ${createClienteDto.document}`);
+      this.logger.info(
+        `Attempting to create client with document: ${createClienteDto.document}`,
+      );
 
       const userFound = await this.clienteRepository.findOne({
         where: {
-          document: createClienteDto.document
-        }
+          document: createClienteDto.document,
+        },
       });
 
       if (userFound) {
-        this.logger.warn(`Client with document ${createClienteDto.document} already exists`);
-        throw new HttpException("Cliente already exists", HttpStatus.CONFLICT);
+        this.logger.warn(
+          `Client with document ${createClienteDto.document} already exists`,
+        );
+        throw new HttpException('Cliente already exists', HttpStatus.CONFLICT);
       }
 
       const newClient = this.clienteRepository.create(createClienteDto);
       const savedClient = await this.clienteRepository.save(newClient);
 
-      this.logger.info(`Client created successfully with ID: ${savedClient.id}`);
+      this.logger.info(
+        `Client created successfully with ID: ${savedClient.id}`,
+      );
       return savedClient;
     } catch (error) {
       this.logger.error(`Error creating client: ${error.message}`, error.stack);
@@ -54,7 +59,10 @@ export class ClientesService {
       this.logger.info(`Retrieved ${clients.length} clients`);
       return clients;
     } catch (error) {
-      this.logger.error(`Error fetching clients: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error fetching clients: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -63,7 +71,7 @@ export class ClientesService {
     try {
       this.logger.info(`Searching for client with ID: ${id}`);
       const userFound = await this.clienteRepository.findOne({
-        where: { id }
+        where: { id },
       });
 
       if (!userFound) {
@@ -83,7 +91,7 @@ export class ClientesService {
     try {
       this.logger.info(`Attempting to update client with ID: ${id}`);
       const userFound = await this.clienteRepository.findOne({
-        where: { id }
+        where: { id },
       });
 
       if (!userFound) {
@@ -91,7 +99,10 @@ export class ClientesService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      const userUpdate = await this.clienteRepository.update(id, updateClienteDto);
+      const userUpdate = await this.clienteRepository.update(
+        id,
+        updateClienteDto,
+      );
       this.logger.info(`Client with ID ${id} updated successfully`);
       return userUpdate;
     } catch (error) {

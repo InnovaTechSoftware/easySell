@@ -71,6 +71,8 @@ export class RedisClientService implements OnModuleInit, OnModuleDestroy {
     try {
       this.client = createClient({
         url: this.config.getConectionURL(),
+        password: this.config.password,
+        database: this.config.database,
         socket: {
           connectTimeout: 10000, // 10 secgundos
           reconnectStrategy: (retries) => {

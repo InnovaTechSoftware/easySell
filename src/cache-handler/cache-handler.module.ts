@@ -17,7 +17,7 @@ import { LoggingModule } from 'src/logger/logger.module';
           password: process.env.REDIS_PASSWORD,
         });
       },
-      inject: [LoggerService], // Mover esta línea aquí
+      inject: [LoggerService],
     },
     CacheManagerService,
   ],

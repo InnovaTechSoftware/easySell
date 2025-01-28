@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggingModule } from './logger/logger.module';
 import { RedisModule } from './cache-handler/cache-handler.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { RedisModule } from './cache-handler/cache-handler.module';
     AuthModule,
     LoggingModule,
     RedisModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],

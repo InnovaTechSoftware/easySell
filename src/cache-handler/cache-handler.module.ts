@@ -15,9 +15,10 @@ import { LoggingModule } from 'src/logger/logger.module';
           host: process.env.REDIS_HOST,
           port: parseInt(process.env.REDIS_PORT || '6379', 10),
           password: process.env.REDIS_PASSWORD,
+          database: parseInt(process.env.REDIS_DATABASE || '0', 10),
         });
       },
-      inject: [LoggerService], // Mover esta línea aquí
+      inject: [LoggerService],
     },
     CacheManagerService,
   ],

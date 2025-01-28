@@ -4,6 +4,7 @@ import { LoggerService } from 'src/logger/logger.service';
 import { Controller, Get } from '@nestjs/common';
 import { PostgresHealthIndicator } from './postgres.health';
 import {MemoryHealthIndicator} from './memory.health';
+import {DiskHealthIndicator} from './disk.health';
 
 @Controller('health')
 export class HealthController {
@@ -13,6 +14,7 @@ export class HealthController {
     private postgres: PostgresHealthIndicator,
     private logger: LoggerService,
     private memory: MemoryHealthIndicator,
+    private disk: DiskHealthIndicator,
   ) {}
 
   @Get()
@@ -23,13 +25,14 @@ export class HealthController {
         () => this.redis.checkHealth('redis'),
         () => this.postgres.checkHealth('postgres'),
         () => this.memory.checkHealth('memory'),
+        () => this.disk.checkHealth('disk'),
       ]);
 
       this.logger.getLogger().info('Health check complete successfully');
       return this.formatHealthCheckResult(result);
     } catch (error) {
       this.logger.getLogger().error('Health check failed', error);
-      throw error;
+      return this.formatHealthCheckResult(error.response);
     }
   }
 
@@ -107,4 +110,21 @@ export class HealthController {
       return this.formatHealthCheckResult(error.response);
     }
   }
+
+  @Get('disk')
+  @HealthCheck()
+  async checkDisk() {
+    try {
+      const result = await this.health.check([
+        () => this.disk.checkHealth('disk'),  // Verifica la salud del disco
+      ]);
+      this.logger.getLogger().info('Disk health check complete successfully');
+      return this.formatHealthCheckResult(result);
+    } catch (error) {
+      this.logger.getLogger().error('Disk health check failed', error);
+      return this.formatHealthCheckResult(error.response);
+    }
+  }
+
+
 }

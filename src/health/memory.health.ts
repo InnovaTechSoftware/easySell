@@ -3,7 +3,7 @@ import { HealthIndicator, HealthIndicatorResult } from '@nestjs/terminus';
 
 @Injectable()
 export class MemoryHealthIndicator extends HealthIndicator {
-  private readonly MEMORY_LIMIT_MB = 80;  
+  private readonly MEMORY_LIMIT_MB = 500;  
 
   async checkHealth(key: string): Promise<HealthIndicatorResult> {
     const memory = process.memoryUsage();

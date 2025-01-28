@@ -6,6 +6,7 @@ import {LoggingModule} from 'src/logger/logger.module';
 import {RedisHealthIndicator} from './redis.health';
 import {PostgresHealthIndicator} from './postgres.health';
 import {MemoryHealthIndicator} from './memory.health';
+import {DiskHealthIndicator} from './disk.health';
 
 @Module({
   imports:[
@@ -17,7 +18,8 @@ import {MemoryHealthIndicator} from './memory.health';
   providers: [
     RedisHealthIndicator,
     PostgresHealthIndicator,
-    MemoryHealthIndicator
+    MemoryHealthIndicator,
+    DiskHealthIndicator
   ],
 })
 export class HealthModule {}

@@ -3,9 +3,12 @@ import { RedisHealthIndicator } from './redis.health';
 import { LoggerService } from 'src/logger/logger.service';
 import { Controller, Get } from '@nestjs/common';
 import { PostgresHealthIndicator } from './postgres.health';
-import {MemoryHealthIndicator} from './memory.health';
-import {DiskHealthIndicator} from './disk.health';
+import { MemoryHealthIndicator } from './memory.health';
+import { DiskHealthIndicator } from './disk.health';
+import { Role } from '../common/enums/rol.enum';
+import { Auth } from '../auth/decorators/auth.decorator';
 
+@Auth(Role.Admin)
 @Controller('health')
 export class HealthController {
   constructor(
@@ -69,7 +72,7 @@ export class HealthController {
   async checkRedis() {
     try {
       const result = await this.health.check([
-        () => this.redis.checkHealth('redis'),
+        () => this.redis.checkHealth('redis'), // Verifica la salud de Redis
       ]);
       this.logger.getLogger().info('Redis health check complete successfully');
       return this.formatHealthCheckResult(result);
@@ -84,7 +87,7 @@ export class HealthController {
   async checkPostgres() {
     try {
       const result = await this.health.check([
-        () => this.postgres.checkHealth('postgres'),
+        () => this.postgres.checkHealth('postgres'), // Verifica la salud de la base de datos
       ]);
       this.logger
         .getLogger()
@@ -101,7 +104,7 @@ export class HealthController {
   async checkMemory() {
     try {
       const result = await this.health.check([
-        () => this.memory.checkHealth('memory'),  // Verifica la salud de la memoria
+        () => this.memory.checkHealth('memory'), // Verifica la salud de la memoria
       ]);
       this.logger.getLogger().info('Memory health check complete successfully');
       return this.formatHealthCheckResult(result);
@@ -116,7 +119,7 @@ export class HealthController {
   async checkDisk() {
     try {
       const result = await this.health.check([
-        () => this.disk.checkHealth('disk'),  // Verifica la salud del disco
+        () => this.disk.checkHealth('disk'), // Verifica la salud del disco
       ]);
       this.logger.getLogger().info('Disk health check complete successfully');
       return this.formatHealthCheckResult(result);
@@ -125,6 +128,4 @@ export class HealthController {
       return this.formatHealthCheckResult(error.response);
     }
   }
-
-
 }

@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggingModule } from './logger/logger.module';
 import { RedisModule } from './cache-handler/cache-handler.module';
 import { HealthModule } from './health/health.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { HealthModule } from './health/health.module';
     LoggingModule,
     RedisModule,
     HealthModule,
+    MailerModule,
   ],
   controllers: [],
   providers: [],

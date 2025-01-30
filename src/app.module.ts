@@ -9,6 +9,7 @@ import { LoggingModule } from './logger/logger.module';
 import { RedisModule } from './cache-handler/cache-handler.module';
 import { HealthModule } from './health/health.module';
 import { MailerModule } from './mailer/mailer.module';
+import { ErrorHandlingModule } from './error-handler/error-handler.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { MailerModule } from './mailer/mailer.module';
     RedisModule,
     HealthModule,
     MailerModule,
+    ErrorHandlingModule,
   ],
   controllers: [],
   providers: [],

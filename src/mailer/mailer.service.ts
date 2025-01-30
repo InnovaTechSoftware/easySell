@@ -48,8 +48,6 @@ export class MailerService implements OnModuleInit {
       this.logger.getLogger().info('Mail service initialized successfully');
     } catch (error) {
       this.logger.getLogger().error('Failed to initialize mail service:', error);
-      // Depending on your application's needs, you might want to:
-      // throw error; // This will prevent the application from starting
     }
   }
 

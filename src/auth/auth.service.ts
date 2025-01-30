@@ -16,12 +16,12 @@ export class AuthService {
   async login({ user, password }: LoginDto) {
     const userfound = await this.usersService.findByUserWithPassword(user);
     if (!userfound) {
-      return new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     const passwordHash = await bcryptjs.compare(password, userfound.password);
     if (!passwordHash) {
-      return new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
     }
 
     const payload = { user: userfound.user, role: userfound.role };
@@ -40,7 +40,7 @@ export class AuthService {
     const usercreate = await this.usersService.findOneByUser(user);
 
     if (usercreate) {
-      return new HttpException('User already exists', HttpStatus.CONFLICT);
+      throw new HttpException('User already exists', HttpStatus.CONFLICT);
     }
 
     await this.usersService.create({
@@ -62,13 +62,15 @@ export class AuthService {
     return await this.usersService.findOneByUser(user);
   }
 
-  async refreshTokens (refreshToken: string){
+  async refreshTokens(refreshToken: string) {
     try {
       const payload = await this.tokenService.verifyRefreshToken(refreshToken);
-      return this.tokenService.generateAccessToken({ user: payload.user, role: payload.role}); 
+      return this.tokenService.generateAccessToken({
+        user: payload.user,
+        role: payload.role,
+      });
     } catch (e) {
       throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
     }
   }
-
 }

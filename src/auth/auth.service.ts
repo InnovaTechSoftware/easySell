@@ -35,6 +35,7 @@ export class AuthService {
     documentType,
     document,
     user,
+    email,
     password,
   }: RegisterDto) {
     const usercreate = await this.usersService.findOneByUser(user);
@@ -49,6 +50,7 @@ export class AuthService {
       documentType,
       document,
       user,
+      email,
       password: await bcryptjs.hash(password, 10),
     });
 

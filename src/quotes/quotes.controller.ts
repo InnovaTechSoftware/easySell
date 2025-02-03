@@ -15,14 +15,9 @@ export class QuotesController {
     await this.quotesService.createQuote(createQuoteDto);
   }
 
-  // @Get('queue-status')
-  // async getQueueStatus() {
-  //   return this.emailQueue.getQueueStatus(); // Devuelve el estado de la cola
-  // }
-
   @Get('next-user')
   async getNextUser() {
-    const nextUser = this.emailQueue.peekNextUser(); // Obtiene el siguiente usuario
+    const nextUser = this.emailQueue.peekNextUser();
     if (!nextUser) {
       return { message: 'No hay usuarios disponibles en la cola.' };
     }

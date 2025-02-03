@@ -14,6 +14,9 @@ export class RegisterDto {
   @IsNumber()
   document: number;
 
+  @IsString()
+  phone: string;
+
   @Transform(({ value }) => value.trim())
   @IsString()
   @MinLength(6)

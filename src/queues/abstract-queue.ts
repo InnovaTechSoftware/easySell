@@ -1,11 +1,8 @@
-// src/queues/abstract-queue.ts
-
 export abstract class Queue<T> {
   protected items: T[] = [];
 
   enqueue(item: T): void {
     this.items.push(item);
-    this.processQueue(); // Llama a processQueue después de encolar un elemento
   }
 
   dequeue(): T | undefined {
@@ -24,7 +21,7 @@ export abstract class Queue<T> {
     return this.items.length === 0;
   }
 
-  MoveToEnd(item: T): void {
+  moveToEnd(item: T): void {
     const index = this.items.findIndex((i) => i === item);
     if (index !== -1) {
       const [removedItem] = this.items.splice(index, 1);
@@ -40,17 +37,8 @@ export abstract class Queue<T> {
   }
 
   getQueue(): T[] {
-    return this.items; // Devuelve todos los elementos de la cola
+    return this.items;
   }
 
-  private async processQueue(): Promise<void> {
-    while (!this.isEmpty()) {
-      const item = this.dequeue(); // Obtiene el primer elemento de la cola
-      if (item) {
-        await this.process(item); // Procesa el elemento
-      }
-    }
-  }
-
-  abstract process(item: T): Promise<void>;
+  abstract process(item: T): Promise<string | void>;
 }

@@ -1,7 +1,5 @@
-// src/quotes/queues/email-queue.ts
-
 import { Injectable } from '@nestjs/common';
-import { Queue } from 'src/queues/abstract-queue';
+import { Queue } from '../../queues/abstract-queue';
 import { Quote } from '../entities/quote.entity';
 import { User } from 'src/users/entities/user.entity';
 import { MailerService } from 'src/mailer/mailer.service';
@@ -24,11 +22,6 @@ export class EmailQueue extends Queue<Quote> {
 
   private async initializeUsers(): Promise<void> {
     this.users = await this.userService.findAll();
-    // if (this.users.length === 0) {
-    //   this.logger.getLogger().error('No hay usuarios disponibles en la cola.');
-    // } else {
-    //   this.logger.getLogger().info('Usuarios inicializados en la cola.');
-    // }
   }
 
   public peekNextUser(): User | null {
@@ -45,7 +38,7 @@ export class EmailQueue extends Queue<Quote> {
     return user;
   }
 
-  async process(quote: Quote): Promise<void> {
+  async process(quote: Quote): Promise<string | void> {
     const user = this.getNextUser();
 
     try {

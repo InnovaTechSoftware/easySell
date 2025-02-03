@@ -11,6 +11,7 @@ import { HealthModule } from './health/health.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ErrorHandlingModule } from './error-handler/error-handler.module';
 import { QuotesModule } from './quotes/quotes.module';
+import { WhatsAppMudule } from './whatsapp/whatsapp.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { QuotesModule } from './quotes/quotes.module';
     MailerModule,
     ErrorHandlingModule,
     QuotesModule,
+    WhatsAppMudule,
   ],
   controllers: [],
   providers: [],

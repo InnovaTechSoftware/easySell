@@ -14,5 +14,6 @@ export class QuoteService {
       createdAt: new Date(),
     };
     this.emailQueue.enqueue(quote);
+    await this.emailQueue.process(quote);
   }
 }

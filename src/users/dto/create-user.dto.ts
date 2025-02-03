@@ -3,6 +3,7 @@ export class CreateUserDto {
   lastname: string;
   documentType: string;
   document: number;
+  phone: string;
   user: string;
   email: string;
   password: string;

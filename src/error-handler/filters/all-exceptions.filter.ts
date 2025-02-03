@@ -51,7 +51,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private getHttpStatus(exception: unknown): number {
     if (exception instanceof HttpException) {
-      // console.log(exception);
+      console.log(exception);
       return exception.getStatus();
     }
     if (exception instanceof BaseException) {

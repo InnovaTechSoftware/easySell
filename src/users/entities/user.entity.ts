@@ -15,11 +15,17 @@ export class User {
   @Column()
   documentType: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   document: number;
 
   @Column({ unique: true, nullable: false })
+  phone: string;
+
+  @Column({ unique: true, nullable: false })
   user: string;
+
+  @Column({ unique: true, nullable: false })
+  email: string;
 
   @Column({ nullable: false, select: false })
   password: string;

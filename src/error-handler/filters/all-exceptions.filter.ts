@@ -22,6 +22,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
 
+    console.log(exception);
+
     const errorResponse = this.createErrorResponse(exception, request);
 
     httpAdapter.reply(
@@ -49,6 +51,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private getHttpStatus(exception: unknown): number {
     if (exception instanceof HttpException) {
+      // console.log(exception);
       return exception.getStatus();
     }
     if (exception instanceof BaseException) {
@@ -59,18 +62,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private getErrorMessage(exception: unknown): string {
     if (exception instanceof Error) {
+      // console.log(exception);
       return exception.message;
     }
+    // console.log(exception);
     return 'Internal server error';
   }
 
   private getErrorType(exception: unknown): string {
     if (exception instanceof BaseException) {
+      // console.log(exception);
       return exception.error;
     }
     if (exception instanceof HttpException) {
+      // console.log(exception);
       return 'Http Exception';
     }
+    // console.log(exception);
     return 'Internal Server Error';
   }
 }

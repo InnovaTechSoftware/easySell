@@ -47,14 +47,16 @@ export class MailerService implements OnModuleInit {
       }
       this.logger.getLogger().info('Mail service initialized successfully');
     } catch (error) {
-      this.logger.getLogger().error('Failed to initialize mail service:', error);
+      this.logger
+        .getLogger()
+        .error('Failed to initialize mail service:', error);
     }
   }
 
   async verifyTransporter(): Promise<boolean> {
     try {
       await this.transporter.verify();
-      this.logger.getLogger().info('SMTP transporter verified successfully');
+      // this.logger.getLogger().info('SMTP transporter verified successfully');
       return true;
     } catch (error) {
       this.logger.getLogger().error('SMTP verification failed:', error);
@@ -73,10 +75,12 @@ export class MailerService implements OnModuleInit {
 
     try {
       await this.transporter.sendMail(emailData);
-      this.logger.getLogger().info(`Email sent successfully to ${recipient}`);
+      // this.logger.getLogger().info(`Email sent successfully to ${recipient}`);
       return true;
     } catch (error) {
-      this.logger.getLogger().error(`Failed to send email to ${recipient}:`, error);
+      this.logger
+        .getLogger()
+        .error(`Failed to send email to ${recipient}:`, error);
       throw new Error(`Failed to send email: ${error.message}`);
     }
   }

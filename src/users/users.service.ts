@@ -51,11 +51,26 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.userRepository.update(id, updateUserDto);
+    const updatedUser = await this.userRepository.findOneBy({ id });
+
+    if (updatedUser) {
+      await this.userEventsService.publishUserUpdated(updatedUser);
+    }
+
+    return updatedUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (user) {
+      await this.userRepository.delete(id);
+      await this.userEventsService.publishUserDeleted(id);
+      return true;
+    }
+
+    return false;
   }
 }

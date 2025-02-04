@@ -1,14 +1,18 @@
-import {Injectable} from "@nestjs/common";
-import {HealthCheckError, HealthIndicator, HealthIndicatorResult} from "@nestjs/terminus";
-import {RedisClientService} from "src/cache-handler/clients/redisClient";
-import {LoggerService} from "src/logger/logger.service";
+import { Injectable } from '@nestjs/common';
+import {
+  HealthCheckError,
+  HealthIndicator,
+  HealthIndicatorResult,
+} from '@nestjs/terminus';
+import { RedisClientService } from 'src/cache-handler/clients/redisClient';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class RedisHealthIndicator extends HealthIndicator {
   constructor(
     private redisService: RedisClientService,
-    private logger: LoggerService
-    ) {
+    private logger: LoggerService,
+  ) {
     super();
   }
 
@@ -22,10 +26,7 @@ export class RedisHealthIndicator extends HealthIndicator {
       });
 
       if (!isHealthy) {
-        throw new HealthCheckError(
-          'Redis check failed',
-          result
-        );
+        throw new HealthCheckError('Redis check failed', result);
       }
 
       return result;

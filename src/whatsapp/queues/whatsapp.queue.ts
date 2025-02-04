@@ -1,5 +1,4 @@
-// src/whatsapp/queues/whatsapp.queue.ts
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { RedisClientType } from 'redis';
 import { LoggerService } from 'src/logger/logger.service';
 import { Queue } from 'src/queues/abstract-queue';
@@ -9,36 +8,38 @@ import { RedisClientService } from 'src/cache-handler/clients/redisClient';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
-export class WhatsAppQueue extends Queue<User> implements OnModuleInit {
+export class WhatsAppQueue
+  extends Queue<User>
+  implements OnModuleInit, OnModuleDestroy
+{
   private users: User[] = [];
   private currentUserIndex: number = 0;
-  private redisClient: RedisClientType; // Cliente de Redis
+  private subscriberClient: RedisClientType;
 
   constructor(
     private readonly userService: UsersService,
     private readonly logger: LoggerService,
     private readonly redisClientService: RedisClientService,
-    // private readonly eventEmitter: EventEmitter2, // Inyectar RedisClientService
   ) {
     super();
   }
 
   async onModuleInit() {
-    // this.eventEmitter.on('redis.ready', async () => {
-    //   this.redisClient = this.redisClientService.getClient();
-    //   console.log('Redis client ready in WhatsAppQueue');
-
-    // Inicializar la lista de usuarios al iniciar el módulo
+    // Usar el cliente subscriber en lugar del cliente principal
+    this.subscriberClient = this.redisClientService.getSubscriberClient();
     await this.refreshUsers();
 
-    // Suscribirse al evento 'user:created' en Redis
-    //   this.redisClient.subscribe('user:created', async (message) => {
-    //     this.logger
-    //       .getLogger()
-    //       .info('Nuevo usuario creado, actualizando lista de usuarios...');
-    //     await this.refreshUsers(); // Actualizar la lista de usuarios
-    //   });
-    // });
+    // Suscribirse usando el cliente subscriber
+    await this.subscriberClient.subscribe('user:created', async (message) => {
+      this.logger.getLogger().info('Nuevo usuario creado, actualizando lista');
+      await this.refreshUsers();
+    });
+  }
+
+  async onModuleDestroy() {
+    if (this.subscriberClient) {
+      await this.subscriberClient.unsubscribe('user:created');
+    }
   }
 
   public peekNextUser(): User | null {
@@ -73,6 +74,6 @@ export class WhatsAppQueue extends Queue<User> implements OnModuleInit {
   async refreshUsers(): Promise<void> {
     this.users = await this.userService.findAll();
     this.currentUserIndex = 0;
-    this.logger.getLogger().info('Lista de usuarios actualizada.');
+    this.logger.getLogger().info('Cola de WhatsApp actualizada.');
   }
 }

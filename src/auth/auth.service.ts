@@ -7,12 +7,14 @@ import { LoginDto } from './dto/login.dto';
 import { TokenService } from '../auth/token.service';
 import { EntityManager } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { UserEventsService } from 'src/users/events/users-events.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly tokenService: TokenService,
+    private readonly userEventsService: UserEventsService,
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
 
@@ -64,6 +66,8 @@ export class AuthService {
         });
 
         await userRepository.save(newUser);
+
+        await this.userEventsService.publishUserCreated(newUser);
 
         return {
           name: `${name} ${lastname}`,

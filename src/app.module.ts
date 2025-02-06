@@ -12,6 +12,7 @@ import { MailerModule } from './mailer/mailer.module';
 import { ErrorHandlingModule } from './error-handler/error-handler.module';
 import { QuotesModule } from './quotes/quotes.module';
 import { WhatsAppMudule } from './whatsapp/whatsapp.module';
+import { CatalogModule } from './catalog/catalog.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { WhatsAppMudule } from './whatsapp/whatsapp.module';
     ErrorHandlingModule,
     QuotesModule,
     WhatsAppMudule,
+    CatalogModule,
   ],
   controllers: [],
   providers: [],
